@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-ylkuh*yq_2jef328+y_jf_y#ini(0q34q%8t&(rfa+(kqb5_@q
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['goldenline-app.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
