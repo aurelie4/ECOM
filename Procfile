@@ -1,1 +1,2 @@
-web : gunicorn ECOM.wsgi --log-file -
+web: gunicorn ECOM.wsgi:application --log-file -
+web: npm start
