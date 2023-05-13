@@ -98,7 +98,7 @@ def update_article(request, *args, **kwargs):
 
 
 def traitementCommande(request, *args, **kwargs):
-    """ traitement,  validation de la com;ande  et verification de l'integrite des donnees(detection de fraude)"""
+    """ traitement,  validation de la commande  et vérification de l'intégrité des données(détection de fraude)"""
 
     STATUS_TRANSACTION = ['ACCEPTED', 'COMPLETED', 'SUCESS']
     
@@ -133,7 +133,7 @@ def traitementCommande(request, *args, **kwargs):
         commande.status = "REFUSED"
         commande.save()
         
-        return JsonResponse("Attention!!! Traitement Refuse Fraude detecte!", safe=False)
+        return JsonResponse("Attention!!! Traitement refusé fraude détecté!", safe=False)
 
     commande.save()    
     
@@ -154,4 +154,4 @@ def traitementCommande(request, *args, **kwargs):
 
 
 
-    return JsonResponse("Votre paiement a été effectué avec succès, vous recevrez votre commande dans un instant !", safe=False)
+    return JsonResponse("Votre paiement a été effectué avec succès, votre commande est en cours de préparation !", safe=False)

@@ -36,7 +36,7 @@
                     <p>Informations d'Expédition:</p>
 
                     <div class="form-field">
-                        <input type="text" class="form-control" name="address" placeholder="address..." required>
+                        <input type="text" class="form-control" name="address" placeholder="Adresse..." required>
                     </div>
 
                     <div class="form-field">
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="form-field">
-                        <input type="text" class="form-control" name="zipcode" placeholder="Zip code..." required>
+                        <input type="text" class="form-control" name="zipcode" placeholder="Code postal..." required>
                     </div>
 
                 </div>
@@ -62,7 +62,7 @@
         <br>
 
         <div class="box-element hidden" id="payment-info">
-            <small>Veillez choissir le Mode de paiement</small> <br>
+            <small>Choissir le mode de paiement :</small> <br>
         <center class="bg-info  my-3"> <button onclick="checkout()" class="btn btn-block" >
             <img class="row-image" src="{% static 'images/cinet.png' %}" alt=""> </button> </center>
             
@@ -88,14 +88,14 @@
             <div class="panier-row">
                 <div style="flex:2"><img class="row-image" src="{{article.produit.imageUrl}}" alt=""></div>
                 <div style="flex:2">{{article.produit.name}}</div>
-                <div style="flex:1">${{article.produit.price}}</div>
+                <div style="flex:1">€{{article.produit.price}}</div>
                 <div style="flex:1">x{{article.quantite}}</div>
             </div>
         {% endfor %}
 
 
             <h5>Articles: {{commande.get_panier_article}}</h5>
-            <h5>Articles: ${{commande.get_panier_total|floatformat:2}}</h5>
+            <h5>Articles: €{{commande.get_panier_total|floatformat:2}}</h5>
             
         </div>
     </div>
@@ -164,7 +164,7 @@
         CinetPay.waitResponse(function(data) {
           
             submitFormData(data.operator_id, data.status);
-            $("#cp_modal_first_parent").hide();
+            €("#cp_modal_first_parent").hide();
             
         });
         CinetPay.onError(function(data) {
@@ -196,11 +196,11 @@
 
     form = document.getElementById('form');
     csrftoken = form.getElementsByTagName('input')[0].value
-    console.log('neauveau token', csrftoken);
+    console.log('nouveau token', csrftoken);
 
     form.addEventListener('submit', function(e){
         e.preventDefault();
-        console.log('envoi des donnee ....');
+        console.log('envoie des données ....');
         document.getElementById('form-button').classList.add('hidden');
         document.getElementById('payment-info').classList.remove('hidden');
     })
@@ -265,7 +265,7 @@
         .then((data) => {
             console.log('data', data);
             //alert(data);
-            $("#cp_modal_first_parent").hide();
+            €("#cp_modal_first_parent").hide();
             Swal.fire({icon:'info',text:data}).then(result => {
                 window.location.href = "{% url 'shop:shop' %}";
             });
