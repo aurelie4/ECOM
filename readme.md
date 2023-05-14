@@ -1,6 +1,6 @@
 
-# django-ecom
-django-ecom app
+# GoldenLine
+GoldenLine-ecom app
 
 # Step 1
 
