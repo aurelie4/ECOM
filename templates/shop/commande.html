@@ -62,7 +62,7 @@
         <br>
 
         <div class="box-element hidden" id="payment-info">
-            <small>Choissir le mode de paiement :</small> <br>
+            <small>Choisir le mode de paiement :</small> <br>
         <center class="bg-info  my-3"> <button onclick="checkout()" class="btn btn-block" >
             <img class="row-image" src="{% static 'images/cinet.png' %}" alt=""> </button> </center>
             
@@ -124,20 +124,15 @@
              });
          },
 
-         // Finalize the transaction
+         // Finalisation de la transaction 
          onApprove: function(data, actions) {
              return actions.order.capture().then(function(orderData) {
-                 // Successful capture! For demo purposes:
+                 
                  console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
                  var transaction = orderData.purchase_units[0].payments.captures[0];
 
                  submitFormData(transaction.id, transaction.status);
 
-                 // Replace the above to show a success message within this page, e.g.
-                 // const element = document.getElementById('paypal-button-container');
-                 // element.innerHTML = '';
-                 // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                 // Or go to another URL:  actions.redirect('thank_you.html');
              });
          }
 
@@ -148,13 +143,13 @@
  <script>
     function checkout() {
         CinetPay.setConfig({
-            apikey: '',//   YOUR APIKEY
+            apikey: '',//   APIKEY
             site_id: '',//YOUR_SITE_ID
             notify_url: 'http://mondomaine.com/notify/',
             mode: 'TEST'
         });
         CinetPay.getCheckout({
-            transaction_id: Math.floor(Math.random() * 100000000).toString(), // YOUR TRANSACTION ID
+            transaction_id: Math.floor(Math.random() * 100000000).toString(), // TRANSACTION ID
             amount: total * 650,
             currency: 'XAF',
             channels: 'ALL',

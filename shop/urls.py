@@ -14,5 +14,7 @@ urlpatterns = [
 
     path('update_article/', views.update_article, name='update_article'),
 
-    path('traitement-commande/', views.traitementCommande, name="traitement_commande")
+    path('traitement-commande/', views.traitementCommande, name="traitement_commande"),
+    
+    path('generer-donnees/', views.generer_donnees_aleatoires, name='generer_donnees')
 ]
