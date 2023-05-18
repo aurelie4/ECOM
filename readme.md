@@ -1,6 +1,5 @@
 
 # GoldenLine
-GoldenLine-ecom app
 
 # Présentation du site e-commerce
 
@@ -43,5 +42,6 @@ Vous trouverez dans le dossier ECOM :
               shop : contient les différents code html
 -tests : contient le code des tests unitaires
 
-
+#Lien TRELLO 
+https://trello.com/invite/b/887MLOBv/ATTIe6ceae416429fa7c3d46b0e3c98074ef8A4CBCD5/bloc3-studi
 
