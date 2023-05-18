@@ -2,12 +2,15 @@
 # GoldenLine
 GoldenLine-ecom app
 
-# Step 1
+# Présentation du site e-commerce
 
-Clone the project 
+GoldenLine est une entreprise spécialisée dans les vêtements grande surface mais propose également d'autres types de produits tels que des articles multimédia, de jardinage ou des aliments. Elle est implantée partout en France avec une estimation de 3 millions de clients. 
+Son site e-commerce présentent tous les produits présents en magasin.
+
+Les clients peuvent commander des produits sans se connecter, la connexion est seulement pour les collaborateurs marketing de GoldenLine.
 
 ```
-git clone https://github.com/donaldte/django-ecom.git
+git clone 
 ```
 
 # Step 2
