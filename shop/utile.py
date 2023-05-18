@@ -1,63 +1,55 @@
-from . models import * 
+from .models import *
 import json
 
-
 def panier_cookie(request):
-    try: 
-        panier = json.loads(request.COOKIES.get('panier'))
-    except:
-        panier = {}    
-
+    
     articles = []
-
+        
     commande = {
         'get_panier_total':0,
         'get_panier_article':0,
-        'produit_physique':False,
-    }
-
+        'produit_physique':True
+        }
     nombre_article = commande['get_panier_article']
+        
     try:
-
+        panier = json.loads(request.COOKIES.get('panier'))
         for obj in panier:
             nombre_article += panier[obj]['qte']
-
-            produit = Produit.objects.get(id=obj)
-
+                   
+            produit =  Produit.objects.get(id=obj)
+                
             total = (produit.price * panier[obj]['qte'])
-
+                
             commande['get_panier_article'] += panier[obj]['qte']
-
+                
             commande['get_panier_total'] += total
-
+                
             article = {
-                'produit':{
-                    'id': produit.id,
-                    'name': produit.name,
+                'produit': {
+                    'id':produit.id,
+                    'name':produit.name,
                     'price': produit.price,
-                    'imageUrl': produit.imageUrl
+                    'imageUrl':produit.imageUrl
                 },
-
+                    
                 'quantite': panier[obj]['qte'],
                 'get_total': total
             }
-
             articles.append(article)
-
+                
             if produit.digital == False:
                 commande['produit_physique'] = True
-                
     except:
-        pass 
+        pass  
 
     context = {
-        'articles': articles,
-        'commande': commande,
+        'articles':articles,
+        'commande':commande,
         'nombre_article': nombre_article
-    }           
-
+    }
+    
     return context
-
 
 def data_cookie(request):
 
@@ -87,18 +79,15 @@ def data_cookie(request):
 
     return context
 
-
 def commandeAnonyme(request, data):
     print("utilisateur non authentifie")
 
     print('cookies', request.COOKIES)
     
     name = data['form']['name']
-    print('data', data)
-    print('name', name)
-    username = data['form']['username']
+    nb_enfants = data['form']['nb_enfants']
+    CategorieSocio = data['form']['CategorieSocio']
     email = data['form']['email']
-    phone = data['form']['phone']
 
     cookie_panier = panier_cookie(request)
     articles = cookie_panier['articles']
@@ -108,15 +97,21 @@ def commandeAnonyme(request, data):
     )
     
     client.name = name
+    client.nb_enfants = nb_enfants  # Ajout de la valeur du champ nb_enfants
+    client.CategorieSocio = CategorieSocio # Ajout de la valeur du champ CategorieSocio
     client.save()
-
-
+    
+    total = float(data['form']['total'])
+    
     commande = Commande.objects.create(
-        client=client
+        client=client,
+        total_trans=total  # Assigner la valeur du montant total
     )
 
     for article in articles:
         produit = Produit.objects.get(id=article['produit']['id'])
+        quantite = article['quantite']
+        total = article['get_total']
 
         CommandeArticle.objects.create(
             produit=produit,
