@@ -3,6 +3,8 @@
 {% load static %}
 
 {% block content %}
+    <h2>Bienvenue sur le site e-commerce de GoldenLine</h2>
+    <p>Trouvez votre bonheur, vêtements, alimentaire, jardinage, multimédia ...</p>
 
     <div class="row">
         <!-- debut -->
@@ -16,7 +18,7 @@
                 <button class="btn btn-outline-secondary add-btn update-panier" data-produit={{produit.pk}} data-action="add">
                 Ajouter au panier</button>
                 <a class="btn btn-outline-success" href="#">Voir</a>
-                <h3 style="float: right;">${{produit.price|floatformat:2}}</h3>
+                <h3 style="float: right;">€{{produit.price|floatformat:2}}</h3>
             </div>
         </div>
         {% endfor %}

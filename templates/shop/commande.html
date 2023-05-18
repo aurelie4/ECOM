@@ -18,11 +18,11 @@
                     </div>
 
                     <div class="form-field">
-                        <input type="text" class="form-control" name="username" placeholder="Prénom..." required>
+                        <input type="number" class="form-control" name="nb_enfants" placeholder="NB enfants..." required>
                     </div>
 
                     <div class="form-field">
-                        <input type="number" class="form-control" name="phone" placeholder="Tel..." required>
+                        <input type="text" class="form-control" name="CategorieSocio" placeholder="Categorie Socio Pro..." required>
                     </div>
 
                     <div class="form-field">
@@ -36,7 +36,7 @@
                     <p>Informations d'Expédition:</p>
 
                     <div class="form-field">
-                        <input type="text" class="form-control" name="address" placeholder="Adresse..." required>
+                        <input type="text" class="form-control" name="address" placeholder="address..." required>
                     </div>
 
                     <div class="form-field">
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="form-field">
-                        <input type="text" class="form-control" name="zipcode" placeholder="Code postal..." required>
+                        <input type="text" class="form-control" name="zipcode" placeholder="Zip code..." required>
                     </div>
 
                 </div>
@@ -62,12 +62,10 @@
         <br>
 
         <div class="box-element hidden" id="payment-info">
-            <small>Choisir le mode de paiement :</small> <br>
-        <center class="bg-info  my-3"> <button onclick="checkout()" class="btn btn-block" >
-            <img class="row-image" src="{% static 'images/cinet.png' %}" alt=""> </button> </center>
+            <small>Option Paypal</small> <br>
+        <!-- <center class="bg-info  my-3"> <button onclick="checkout()" class="btn btn-block" >-->
+            <button class="btn w-100 btn-success btn-block" id="make-payment">Effectuer le paiement</button>
             
-            <div id="paypal-button-container"></div>
-
             
         </div>
 
@@ -75,7 +73,7 @@
 
 
 
-    <div class="col-lg-7">
+    <div class="col-lg-6">
         <div class="box-element">
 
             <a class="btn btn-outline-dark" href="{% url 'shop:panier' %}">&#x2190; Retour au panier </a>
@@ -95,78 +93,12 @@
 
 
             <h5>Articles: {{commande.get_panier_article}}</h5>
-            <h5>Articles: €{{commande.get_panier_total|floatformat:2}}</h5>
+            <h5>Total: €{{commande.get_panier_total|floatformat:2}}</h5>
             
         </div>
     </div>
 </div>
 
- <!-- Include the PayPal JavaScript SDK -->
- <script src="https://www.paypal.com/sdk/js?client-id=AZ0eZylbqLFaIEyWfH74MMFdCYRiR9PgIVKXjJiReDinExGn6ugJD1qFPge5bT_doUFj3Fu8Eil0DvPJ&currency=USD"></script>
-
- <script>
-     var total = parseFloat('{{commande.get_panier_total}}').toFixed(2);
-     // Render the PayPal button into #paypal-button-container
-     paypal.Buttons({
-         
-         style:{
-            color: 'blue',
-            shape: 'rect',
-         },
-         // Set up the transaction
-         createOrder: function(data, actions) {
-             return actions.order.create({
-                 purchase_units: [{
-                     amount: {
-                         value: total
-                     }
-                 }]
-             });
-         },
-
-         // Finalisation de la transaction 
-         onApprove: function(data, actions) {
-             return actions.order.capture().then(function(orderData) {
-                 
-                 console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                 var transaction = orderData.purchase_units[0].payments.captures[0];
-
-                 submitFormData(transaction.id, transaction.status);
-
-             });
-         }
-
-
-     }).render('#paypal-button-container');
- </script>
- 
- <script>
-    function checkout() {
-        CinetPay.setConfig({
-            apikey: '',//   APIKEY
-            site_id: '',//YOUR_SITE_ID
-            notify_url: 'http://mondomaine.com/notify/',
-            mode: 'TEST'
-        });
-        CinetPay.getCheckout({
-            transaction_id: Math.floor(Math.random() * 100000000).toString(), // TRANSACTION ID
-            amount: total * 650,
-            currency: 'XAF',
-            channels: 'ALL',
-            description: 'Test de paiement',   
-
-        });
-        CinetPay.waitResponse(function(data) {
-          
-            submitFormData(data.operator_id, data.status);
-            €("#cp_modal_first_parent").hide();
-            
-        });
-        CinetPay.onError(function(data) {
-            console.log(data);
-        });
-    }
-</script>
 
 <script type="text/javascript">
 
@@ -195,26 +127,30 @@
 
     form.addEventListener('submit', function(e){
         e.preventDefault();
-        console.log('envoie des données ....');
+        console.log('envoi des données ....');
         document.getElementById('form-button').classList.add('hidden');
         document.getElementById('payment-info').classList.remove('hidden');
     })
 
-    // document.getElementById('make-payment').addEventListener('click', function(e){
-    //     submitFormData();
-    // })
+     document.getElementById('make-payment').addEventListener('click', function(e){
+         submitFormData();
+     })
 
-    function submitFormData(transactionId, status){
 
-        var paymentInfo = {
-            'transaction_id': transactionId,
-            'status': status
-        }
+    function submitFormData(){
+         
+
+        console.log("paiement en cours");
+
+       //var paymentInfo = {
+       //     'transaction_id': transactionId,
+       //     'status': 'complet'
+       // }
         
         var userFormData = {
             'name':null,
-            'username':null,
-            'phone': null,
+            'nb_enfants':null,
+            'CategorieSocio': null,
             'email': null,
             'total': total,
         }
@@ -235,8 +171,8 @@
 
         if (user == "AnonymousUser"){
             userFormData.name = form.name.value;
-            userFormData.username = form.username.value;
-            userFormData.phone = form.phone.value;
+            userFormData.nb_enfants = form.nb_enfants.value;
+            userFormData.CategorieSocio = form.CategorieSocio.value;
             userFormData.email = form.email.value;
 
             console.log(userFormData);
@@ -250,7 +186,7 @@
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrftoken
             },
-            body: JSON.stringify({"form": userFormData, "shipping": shippingUserInfo, 'payment_info': paymentInfo})
+            body: JSON.stringify({"form": userFormData, "shipping": shippingUserInfo})
         })
 
         .then((response) => {
@@ -259,14 +195,12 @@
 
         .then((data) => {
             console.log('data', data);
-            //alert(data);
-            €("#cp_modal_first_parent").hide();
-            Swal.fire({icon:'info',text:data}).then(result => {
-                window.location.href = "{% url 'shop:shop' %}";
-            });
+            alert('traitement comande terminé');
             panier = {};
             document.cookie = "panier=" + JSON.stringify(panier) + ";domain=;path=/";
-        })
+            window.location.href = "{% url 'shop:shop' %}";
+            });
+            
     }
 </script>
 
