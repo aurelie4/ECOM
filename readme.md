@@ -13,6 +13,22 @@ Les clients peuvent commander des produits sans se connecter, la connexion est s
 git clone https://github.com/aurelie4/ECOM.git
 ```
 
+#Choix techniques
+-	Front-end : HTML, CSS, JavaScript et PHP
+-	Back-end : Python
+-	Base de données : Django
+-	Déploiement : Heroku
+
+
+#Etape installation
+- Environnement :
+python3.9 -m venv venv
+venv\scripts\activate
+
+- Django : 
+pip install django=4.1.2
+
+
 # Explication du code
 
 Vous trouverez dans le dossier ECOM : 
@@ -26,4 +42,6 @@ Vous trouverez dans le dossier ECOM :
 - templates : base.html contient le code qui sera présent sur toutes les pages du site
               shop : contient les différents code html
 -tests : contient le code des tests unitaires
+
+
 
