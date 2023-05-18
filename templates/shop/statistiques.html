@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Statistiques</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            width: 45%;
+            display: inline-block;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="depenses-par-categorie-chart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="depense-panier-moyen-chart"></canvas>
+    </div>
+    <a class="btn btn-outline-dark" href="{% url 'shop:shop' %}">&#x2190;Retour</a>
+    <script>
+        // Récupérer les données depuis la vue Django
+        var depensesParCategorieData = {{ depenses_par_categorie|safe }};
+        var depensePanierMoyenData = {{ depense_panier_moyen|safe }};
+        var categoriesLabels = {{ categories_labels|safe }};
+
+        // Créer les graphiques avec Chart.js
+        var depensesParCategorieChart = new Chart(document.getElementById('depenses-par-categorie-chart'), {
+            type: 'pie',
+            data: {
+                labels: categoriesLabels,
+                datasets: [{
+                    label: 'Dépenses par catégorie socioprofessionnelle',
+                    data: depensesParCategorieData,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(192, 75, 75, 0.2)',
+                        'rgba(192, 192, 75, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(192, 75, 75, 1)',
+                        'rgba(192, 192, 75, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        var depensePanierMoyenChart = new Chart(document.getElementById('depense-panier-moyen-chart'), {
+            type: 'bar',
+            data: {
+                labels: categoriesLabels,
+                datasets: [{
+                    label: 'Dépense moyenne du panier par catégorie socioprofessionnelle',
+                    data: depensePanierMoyenData,
+                    backgroundColor: 'rgba(192, 75, 75, 0.2)',
+                    borderColor: 'rgba(192, 75, 75, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                var value = context.raw;
+                                return value.toFixed(2); // Afficher deux décimales
+                            }
+                        }
+                    }
+                },
+                responsive: true
+            }
+        });
+    </script>
+</body>
+</html>
