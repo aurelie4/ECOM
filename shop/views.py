@@ -4,17 +4,68 @@ from django.http import JsonResponse
 import json
 from datetime import datetime
 from .utile import commandeAnonyme, data_cookie, panier_cookie
-from django.shortcuts import render
 from .models import Category
 from django.views.decorators.csrf import csrf_exempt
 import random
 from django.contrib.auth.models import User
 from django.utils import timezone
 from faker import Faker
-
 from .models import CategorieSocio, Client, Category, Produit, Commande, CommandeArticle, AddressChipping
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from decimal import Decimal
+
+from django.http import HttpResponse
+from django.db.models import Sum, Avg, Count, DecimalField, ExpressionWrapper, F
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+@login_required
+def statistiques(request):
+    # Récupérer les dépenses par catégorie en fonction de la catégorie socioprofessionnelle
+    categories = CategorieSocio.objects.all()
+    depenses_par_categorie = []
+    depense_panier_moyen = []
+
+    for categorie in categories:
+        # Calculez les dépenses pour chaque catégorie socioprofessionnelle
+        depenses = Commande.objects.filter(client__CategorieSocio=categorie).values_list('total_trans', flat=True)
+        depenses_par_categorie.append(sum(depenses))
+
+        # Calculez la dépense moyenne du panier pour chaque catégorie socioprofessionnelle
+        nb_commandes = Commande.objects.filter(client__CategorieSocio=categorie).count()
+        if nb_commandes > 0:
+            depense_moyenne = sum(depenses) / nb_commandes
+        else:
+            depense_moyenne = 0
+        depense_panier_moyen.append(depense_moyenne)
+
+    # Convertir les valeurs Decimal en float
+    depenses_par_categorie = [float(d) for d in depenses_par_categorie]
+    depense_panier_moyen = [float(d) for d in depense_panier_moyen]
+
+    context = {
+        'depenses_par_categorie': depenses_par_categorie,
+        'depense_panier_moyen': depense_panier_moyen,
+        'categories_labels': [categorie.nom_categ for categorie in categories]
+    }
+
+    return render(request, 'shop/statistiques.html', context)
+
+def filtre_produit(request):
+    selected_category_id = request.GET.get('category_id')  # Utilisation de 'category_id' pour le champ de clé primaire
+    if selected_category_id:
+        selected_category = Category.objects.get(id=selected_category_id)
+        produits = Produit.objects.filter(Category=selected_category)
+    else:
+        produits = Produit.objects.all()
+
+    context = {
+        'selected_category': selected_category_id,  # Utilisation de 'selected_category_id' au lieu de 'selected_category'
+        'produits': produits,
+    }
+    return render(request, 'shop/filtre_produit.html', context)
 
 
 def shop(request, *args, **kwargs):
@@ -100,84 +151,29 @@ def update_article(request, *args, **kwargs):
     return JsonResponse("Article ajouté", safe=False)
 
 
-def commandeAnonyme (request, data):
-    name = data['form']['name']
-    email = data['form']['username']
-    nb_enfant = data['form']['nb-enfant']
-    categ_socio = data['form']['categ_socio']
-
-    cookie_panier = panier_cookie(request)
-    
-    articles = cookie_panier['articles']
-    
-    client, created = Client.objects.get_or_create(
-        email = email
-    )
-    
-    client.name = name
-    client.save()
-       
-    commande = Commande.objects.create(
-        client = Client
-    )
-    
-    for article in articles:
-        produit = Produit.objects.get(id=article['produit']['pk'])
-        CommandeArticle.objects.create(
-            produit=produit,
-            commande=commande,
-            quantite = article['quantite']
-        )
-        
-    return client, commande
-    
-    
-    
-
 def traitementCommande(request, *args, **kwargs):
-    """ traitement,  validation de la commande  et vérification de l'intégrité des données(détection de fraude)"""
-
-    STATUS_TRANSACTION = ['ACCEPTED', 'COMPLETED', 'SUCESS']
-    
+   
     transaction_id = datetime.now().timestamp()
 
     data = json.loads(request.body)
-
-    print(data)
 
     if request.user.is_authenticated:
 
         client = request.user.client
 
         commande, created = Commande.objects.get_or_create(client=client, complete=False)
-
-
     else:
         client, commande = commandeAnonyme(request, data)
 
     total = float(data['form']['total'])
 
-    commande.transaction_id = data['payment_info']['transaction_id']
+    commande.transaction_id = transaction_id
 
-    commande.total_trans = total
 
     if commande.get_panier_total == total:
 
         commande.complete = True
-        commande.status = data['payment_info']['status']
-
-    else:
-        commande.status = "REFUSED"
-        commande.save()
-        
-        return JsonResponse("Attention!!! Traitement refusé fraude détecté!", safe=False)
-
-    commande.save()    
-    
-    if not commande.status in STATUS_TRANSACTION:
-        return JsonResponse("Désolé, le paiement a échoué, veuillez réessayer")    
-
-  
+    commande.save()       
 
     if commande.produit_physique:
 
@@ -189,11 +185,11 @@ def traitementCommande(request, *args, **kwargs):
             zipcode=data['shipping']['zipcode']
         )
 
-
-
     return JsonResponse("Votre paiement a été effectué avec succès, votre commande est en cours de préparation !", safe=False)
 
 
+
+#définir des données aléatoires
 fake = Faker()
 
 @staff_member_required  # Décorateur pour restreindre l'accès aux administrateurs uniquement
