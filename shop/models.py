@@ -22,11 +22,12 @@ class Client(models.Model):
 
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     
 
 class Category(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=True, blank=True)
     description = models.TextField(null=True,blank=True)
 
@@ -62,9 +63,9 @@ class Produit(models.Model):
 class Commande(models.Model):
     client = models.ForeignKey(Client, on_delete=models.SET_NULL,blank=True, null=True)
     date_commande = models.DateTimeField(auto_now_add=True)
-    complete = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=200)
-    status = models.CharField(max_length=200)
+    complete = models.BooleanField(default=False, null=True, blank=True)
+    transaction_id = models.CharField(max_length=200, null=True)
+    status = models.CharField(max_length=200, null=True, blank=True)
     total_trans = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
 
@@ -117,7 +118,3 @@ class AddressChipping(models.Model):
 
     def __str__(self):
         return self.addresse
-
-
-
-    
