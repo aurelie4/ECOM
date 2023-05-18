@@ -4,7 +4,10 @@ from . import views
 app_name = "shop"
 
 urlpatterns = [ 
-               
+            
+    
+    
+    path('statistiques/', views.statistiques, name='statistiques'),         
    
     path('', views.shop, name='shop'),
 
@@ -16,5 +19,8 @@ urlpatterns = [
 
     path('traitement-commande/', views.traitementCommande, name="traitement_commande"),
     
-    path('generer-donnees/', views.generer_donnees_aleatoires, name='generer_donnees')
+    path('generer-donnees/', views.generer_donnees_aleatoires, name='generer_donnees'),
+    
+    path('filtre_produit/', views.filtre_produit, name='filtre_produit')
+    
 ]
