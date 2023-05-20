@@ -13,10 +13,10 @@ git clone https://github.com/aurelie4/ECOM.git
 ```
 
 #Choix techniques
--	Front-end : HTML, CSS, JavaScript et PHP
--	Back-end : Python
--	Base de données : Django
--	Déploiement : Heroku
+-	Front-end : HTML, CSS, JavaScript
+-	Back-end : Django
+-	Base de données : SQLite
+-	Déploiement : PythonAnywhere
 
 
 #Etape installation
@@ -44,4 +44,6 @@ Vous trouverez dans le dossier ECOM :
 
 #Lien TRELLO 
 https://trello.com/invite/b/887MLOBv/ATTIe6ceae416429fa7c3d46b0e3c98074ef8A4CBCD5/bloc3-studi
+
+#Lien du site : https://aurelie4.pythonanywhere.com/
 
